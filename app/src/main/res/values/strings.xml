@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">BitcoinTrends</string>
+    <string name="fetch_data">Fetch Data</string>
+    <string name="refresh">Refresh</string>
+</resources>
