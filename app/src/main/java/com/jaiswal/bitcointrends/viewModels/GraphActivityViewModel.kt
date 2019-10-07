@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import com.jaiswal.bitcointrends.ChartDataBase
 import com.jaiswal.bitcointrends.ViewModelFactory.Companion.application
 import com.jaiswal.bitcointrends.models.data.fiveWeeks.FiveWeekChartPoint
@@ -18,16 +19,24 @@ import java.util.*
 
 
 class GraphActivityViewModel(application: Application) : AndroidViewModel(application) {
-    private val PRIVATE_MODE = 0
-    private val PREF_NAME = "bitcoin_prefs"
     private val dataBase: ChartDataBase = ChartDataBase.invoke(application)
     var lastRepositoryLocal = false
+    private var chartRepository: ChartRepository
+    var data: LiveData<List<FiveWeekChartPoint>>
 
-    fun getRemoteRepository(): ChartRepository{
-        return ChartRemoteRepository(dataBase)
+    init {
+        chartRepository = getRepository()
+        data = chartRepository.getChartData()
     }
 
-    fun getRepository(): ChartRepository {
+    fun getRemoteRepository(): ChartRepository {
+        return if(isNetworkAvailable())
+            ChartRemoteRepository(dataBase)
+        else
+            chartRepository
+    }
+
+    private fun getRepository(): ChartRepository {
         if (isNetworkAvailable()) {
             if (isStaleDataInCache()) {
                 lastRepositoryLocal = false
@@ -82,5 +91,10 @@ class GraphActivityViewModel(application: Application) : AndroidViewModel(applic
             return sortedArray.toTypedArray()
         }
         return null
+    }
+
+    companion object {
+        private const val PRIVATE_MODE = 0
+        private const val PREF_NAME = "bitcoin_prefs"
     }
 }

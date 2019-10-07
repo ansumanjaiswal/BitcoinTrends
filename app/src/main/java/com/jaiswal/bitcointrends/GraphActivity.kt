@@ -4,10 +4,13 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.jaiswal.bitcointrends.models.data.fiveWeeks.FiveWeekChartPoint
+import com.jaiswal.bitcointrends.repository.local.ChartLocalRepository
+import com.jaiswal.bitcointrends.repository.remote.ChartRemoteRepository
 import com.jaiswal.bitcointrends.viewModels.GraphActivityViewModel
 import com.jjoe64.graphview.GraphView
 import com.jjoe64.graphview.series.DataPoint
@@ -31,7 +34,7 @@ class GraphActivity : AppCompatActivity() {
             disableScreenClick()
             graph.removeAllSeries()
             x = null
-            viewModel.getRepository().getChartData().observe(this, Observer {
+            viewModel.data.observe(this, Observer {
                 observeDataFetch(it)
             })
         }
@@ -41,9 +44,18 @@ class GraphActivity : AppCompatActivity() {
             disableScreenClick()
             graph.removeAllSeries()
             x = null
-            viewModel.getRemoteRepository().getChartData().observe(this, Observer {
-                observeDataRefresh(it)
-            })
+            val repo = viewModel.getRemoteRepository()
+            if(repo is ChartRemoteRepository){
+                viewModel.getRemoteRepository().getChartData().observe(this, Observer {
+                    observeDataRefresh(it)
+                })
+            }else{
+                Toast.makeText(this, "No Network, loading local data.", Toast.LENGTH_LONG).show()
+                viewModel.data.observe(this, Observer {
+                    observeDataFetch(it)
+                })
+            }
+
         }
     }
 
