@@ -17,6 +17,9 @@ interface FiveWeekDAO {
     @Delete
     fun delete(data: FiveWeekChartPoint)
 
+    @Query("DELETE FROM fiveweekchartpoint")
+    fun deleteAll()
+
     @Update
     fun updateTodo(vararg data: FiveWeekChartPoint)
 }

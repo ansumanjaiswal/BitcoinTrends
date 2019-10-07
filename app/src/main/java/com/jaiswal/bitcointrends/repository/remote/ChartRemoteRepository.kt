@@ -68,6 +68,7 @@ class ChartRemoteRepository(private var dataBase: ChartDataBase) : ChartReposito
     private fun insertData(data: List<FiveWeekChartPoint>) {
         val mHandlerThread = DbUpdateHandler()
         Thread(Runnable {
+            dataBase.fiveWeekDao().deleteAll()
             dataBase.fiveWeekDao().insertAll(*data.toTypedArray())
             val message = Message()
             message.arg1 = 5
