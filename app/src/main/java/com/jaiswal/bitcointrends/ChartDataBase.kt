@@ -17,30 +17,8 @@ import com.jaiswal.bitcointrends.models.data.fiveWeeks.FiveWeekDAO
     version = 1
 )
 abstract class ChartDataBase : RoomDatabase() {
-    private var chartDataBase: ChartDataBase? = null
-/*
-    */
-    /**
-     * from developers android, made my own singleton
-     *
-     * @param context
-     * @return
-     *//*
-    fun getInstance(context: Context): ChartDataBase {
-        if (chartDataBase == null) {
-            chartDataBase = Room.databaseBuilder(
-                context.applicationContext,
-                ChartDataBase::class.java, "database-name"
-            ).build()
-        }
-        return chartDataBase as ChartDataBase
-    }*/
-
-
-    //abstract fun thirtyDayDao(): ThirtyWeekDAO
 
     abstract fun fiveWeekDao(): FiveWeekDAO
-    //abstract fun tenWeekDao(): TenWeekDAO
 
     companion object {
         @Volatile
